@@ -8,7 +8,7 @@ controls: false
 --
 
 # Microserver
-## or how can we make APIs using R
+## or how to make APIs using R
 
 --
 
@@ -25,4 +25,9 @@ controls: false
 ### Compromise
 
 <img src="http://puu.sh/kPkTo/e51dc5ee71.png" width="100%">
+--
+
+### Compromise
+
+<img src="http://puu.sh/kPncW/044c031806.png" width="100%">
 --
