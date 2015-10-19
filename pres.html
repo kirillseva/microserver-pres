@@ -426,11 +426,40 @@ pre .chunk {
 </section>
   </div>
   <div class="slide hidden" id="slide-6">
-    <section class="slide-content"></section>
+    <section class="slide-content"><h3 id="enter-microserver">Enter microserver</h3>
+<pre><code class="lang-r"><span class="comment">## Simple hello-world web server</span>
+routes &lt;- list(<span class="string">'/hello'</span> = <span class="keyword">function</span>(<span class="keyword">...</span>) { <span class="string">"world"</span> }, <span class="keyword">function</span>(<span class="keyword">...</span>) { <span class="string">"default"</span> })
+microserver::run_server(routes, port = <span class="number">8103</span>)</code></pre>
+<p>That&#39;s it!</p>
+</section>
   </div>
   <div class="slide hidden" id="slide-7">
+    <section class="slide-content"><h3 id="microserver">Microserver</h3>
+<ul>
+<li>Built on top of <code>httpuv</code> - the same library that powers Shiny.</li>
+<li>Parses POST and GET parameters for you.</li>
+<li>Used by Avant to power all predictions.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><h3 id="demo">Demo</h3>
+<ul>
+<li>Show POST and GET parameter parsing works.</li>
+<li>Make a titanic prediction web server.</li>
+<li>Create a shiny app that works with microserver.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
     <section class="slide-content"><div class="author">
   <h1 class="name">Kirill Sevastyanenko</h1>
+    <h3 class="twitter">
+      <a href="http://twitter.com/@kirillseva">@kirillseva</a>
+    </h3>
+    <h3 class="github">
+      <a href="https://github.com/robertzk/microserver">robertzk/microserver</a>
+    </h3>
     <h3 class="email">
       <a href="mailto:kirill.sevastyanenko@avant.com">kirill.sevastyanenko@avant.com</a>
     </h3>

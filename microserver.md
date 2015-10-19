@@ -2,6 +2,8 @@ title: "Microserver: APIs in R"
 author:
   name: Kirill Sevastyanenko
   email: kirill.sevastyanenko@avant.com
+  twitter: kirillseva
+  github: robertzk/microserver
 
 output: pres.html
 controls: false
@@ -31,3 +33,28 @@ controls: false
 
 <img src="http://puu.sh/kPncW/044c031806.png" width="100%">
 --
+
+### Enter microserver
+
+```r
+## Simple hello-world web server
+routes <- list('/hello' = function(...) { "world" }, function(...) { "default" })
+microserver::run_server(routes, port = 8103)
+```
+
+That's it!
+--
+
+### Microserver
+
+- Built on top of `httpuv` - the same library that powers Shiny.
+- Parses POST and GET parameters for you.
+- Used by Avant to power all predictions.
+
+--
+
+### Demo
+
+- Show POST and GET parameter parsing works.
+- Make a titanic prediction web server.
+- Create a shiny app that works with microserver.
