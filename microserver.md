@@ -49,7 +49,33 @@ That's it!
 
 - Built on top of `httpuv` - the same library that powers Shiny.
 - Parses POST and GET parameters for you.
-- Used by Avant to power all predictions.
+- Reliable - used by Avant to power all predictions.
+
+--
+
+### POST and GET request parameter parsing
+
+```r
+library(magrittr); library(httr); library(jsonlight)
+routes <- list(
+  '/post' = function(p, q) { p },
+  '/get'  = function(p, q) { q },
+  function(...) "ok")
+microserver::run_server(routes, port = 8103)
+```
+
+```r
+httr::GET(url) %>% content # default route
+# [1] "\"ok\""
+httr::GET(paste0(url, 'get')) %>% content # GET with no args
+# [1] ""
+httr::GET(paste0(url, 'get?a=1&b=2')) %>% content # list(a=1,b=2) is available as `q`
+# [1] "{\"a\":\"1\",\"b\":\"2\"}"
+httr::GET(paste0(url, 'post?a=1&b=2')) %>% content # `p` is still empty
+# [1] ""
+httr::POST(paste0(url, 'post'), body = list(a=1,b=2), encode = "json") %>% content
+# [1] "{\"a\":1,\"b\":2}" # list(a=1,b=2) is available as `p`
+```
 
 --
 

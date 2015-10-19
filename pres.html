@@ -438,11 +438,31 @@ microserver::run_server(routes, port = <span class="number">8103</span>)</code><
 <ul>
 <li>Built on top of <code>httpuv</code> - the same library that powers Shiny.</li>
 <li>Parses POST and GET parameters for you.</li>
-<li>Used by Avant to power all predictions.</li>
+<li>Reliable - used by Avant to power all predictions.</li>
 </ul>
 </section>
   </div>
   <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><h3 id="post-and-get-request-parameter-parsing">POST and GET request parameter parsing</h3>
+<pre><code class="lang-r"><span class="keyword">library</span>(magrittr); <span class="keyword">library</span>(httr); <span class="keyword">library</span>(jsonlight)
+routes &lt;- list(
+  <span class="string">'/post'</span> = <span class="keyword">function</span>(p, q) { p },
+  <span class="string">'/get'</span>  = <span class="keyword">function</span>(p, q) { q },
+  <span class="keyword">function</span>(<span class="keyword">...</span>) <span class="string">"ok"</span>)
+microserver::run_server(routes, port = <span class="number">8103</span>)</code></pre>
+<pre><code class="lang-r">httr::GET(url) %&gt;% content <span class="comment"># default route</span>
+<span class="comment"># [1] "\"ok\""</span>
+httr::GET(paste0(url, <span class="string">'get'</span>)) %&gt;% content <span class="comment"># GET with no args</span>
+<span class="comment"># [1] ""</span>
+httr::GET(paste0(url, <span class="string">'get?a=1&amp;b=2'</span>)) %&gt;% content <span class="comment"># list(a=1,b=2) is available as `q`</span>
+<span class="comment"># [1] "{\"a\":\"1\",\"b\":\"2\"}"</span>
+httr::GET(paste0(url, <span class="string">'post?a=1&amp;b=2'</span>)) %&gt;% content <span class="comment"># `p` is still empty</span>
+<span class="comment"># [1] ""</span>
+httr::POST(paste0(url, <span class="string">'post'</span>), body = list(a=<span class="number">1</span>,b=<span class="number">2</span>), encode = <span class="string">"json"</span>) %&gt;% content
+<span class="comment"># [1] "{\"a\":1,\"b\":2}" # list(a=1,b=2) is available as `p`</span></code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
     <section class="slide-content"><h3 id="demo">Demo</h3>
 <ul>
 <li>Show POST and GET parameter parsing works.</li>
@@ -451,7 +471,7 @@ microserver::run_server(routes, port = <span class="number">8103</span>)</code><
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-9">
+  <div class="slide hidden" id="slide-10">
     <section class="slide-content"><div class="author">
   <h1 class="name">Kirill Sevastyanenko</h1>
     <h3 class="twitter">
