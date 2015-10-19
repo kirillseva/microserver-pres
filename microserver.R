@@ -1,0 +1,6 @@
+library(microserver)
+library(methods)
+library(stats)
+mod    <- lm(mpg ~ . ,data=mtcars)
+routes <- list('/predict' = function(p, q) { list(score = predict(mod, p)) }, function(...) "pong")
+microserver::run_server(routes, port = 8103)
