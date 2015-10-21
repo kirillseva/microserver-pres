@@ -443,6 +443,90 @@ microserver::run_server(routes, port = <span class="number">8103</span>)</code><
 </section>
   </div>
   <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><h3 id="examples">Examples</h3>
+<pre><code class="lang-r">routes &lt;- list(
+  <span class="comment"># every route is a map between path and the function that should be called</span>
+  <span class="comment"># on the request</span>
+  <span class="comment"># Let's make a route with path 'hello' that returns 'world'</span>
+  <span class="string">'/hello'</span> = <span class="keyword">function</span>(<span class="keyword">...</span>) <span class="string">'world'</span>,
+  <span class="comment"># That simple!</span>
+  <span class="comment"># Now let's make something more complicated</span>
+  <span class="comment"># Let's make a route 'sum' that would sum all the inputs for a JSON payload</span>
+  <span class="comment"># that looks like {"values": [1,2,3,-5.6,...]}</span>
+  <span class="comment"># and let's make it works with POST requests (or, generally speaking)</span>
+  <span class="comment"># for requests that have a JSON body</span>
+  <span class="string">'/sum'</span>   = <span class="keyword">function</span>(p, q) {
+    <span class="keyword">if</span> (length(p) == <span class="number">0</span>) <span class="string">'must be a POST request with values'</span>
+    <span class="keyword">else</span> sum(unlist(p$values))
+  },
+  <span class="comment"># You can also submit a wildcard route that will be called</span>
+  <span class="comment"># whenever someone queries a route that was not specified</span>
+  <span class="comment"># in the configuration</span>
+  <span class="keyword">function</span>(<span class="keyword">...</span>) { <span class="string">"This is microserver demo"</span> }
+)
+<span class="comment"># And then you can just run the server using the routes that you've defined</span>
+microserver::run_server(routes, port = <span class="number">8103</span>)</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
+    <section class="slide-content"><h3 id="examples">Examples</h3>
+<p>Here are some examples of querying this server:
+<img src="http://puu.sh/kRx5x/d34cd39f72.png" width="100%"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-10">
+    <section class="slide-content"><h3 id="examples">Examples</h3>
+<p><img src="http://puu.sh/kRwd1/95382fcb8f.png" width="100%"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-11">
+    <section class="slide-content"><h3 id="examples">Examples</h3>
+<p>Notice how error message gets returned as a response
+<img src="http://puu.sh/kRwqo/454be5aa0c.png" width="100%"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-12">
+    <section class="slide-content"><h3 id="examples">Examples</h3>
+<p><img src="http://puu.sh/kRwT5/ba673c15cb.png" width="100%"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-13">
+    <section class="slide-content"><h3 id="demo">Demo</h3>
+<ul>
+<li>Make a web server that serves model predictions.</li>
+<li>Create a shiny app that works with microserver.</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-14">
+    <section class="slide-content"><h3 id="code-for-server">Code for server</h3>
+<p>This part can be done entirely by data scientist</p>
+<pre><code class="lang-r">mod    &lt;- lm(mpg ~ . , data = mtcars) <span class="comment"># s3read('path/to/model')</span>
+score &lt;- <span class="keyword">function</span>(mod, lst) {
+  lst &lt;- lapply(lst, as.numeric)
+  df  &lt;- data.frame(lst, stringsAsFactors = <span class="literal">FALSE</span>)
+  unname(predict(mod, df))
+}
+routes &lt;- list(<span class="string">'/predict'</span> = <span class="keyword">function</span>(p, q) {
+  list(score = score(mod, p)) }, <span class="keyword">function</span>(<span class="keyword">...</span>) <span class="string">"pong"</span>
+)
+microserver::run_server(routes, port = <span class="number">8103</span>)</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-15">
+    <section class="slide-content"><h3 id="testing-that-the-server-works">Testing that the server works</h3>
+<p><img src="http://puu.sh/kSykk/d98e579389.png" width="100%"></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-16">
+    <section class="slide-content"><h3 id="using-this-model-in-an-app">Using this model in an app</h3>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-17">
+    <section class="slide-content"><h2 id="one-model-server-infinitely-many-apps-">One model server - infinitely many apps!</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-18">
     <section class="slide-content"><h3 id="post-and-get-request-parameter-parsing">POST and GET request parameter parsing</h3>
 <pre><code class="lang-r"><span class="keyword">library</span>(magrittr); <span class="keyword">library</span>(httr); <span class="keyword">library</span>(jsonlight)
 routes &lt;- list(
@@ -462,63 +546,7 @@ httr::POST(paste0(url, <span class="string">'post'</span>), body = list(a=<span 
 <span class="comment"># [1] "{\"a\":1,\"b\":2}" # list(a=1,b=2) is available as `p`</span></code></pre>
 </section>
   </div>
-  <div class="slide hidden" id="slide-9">
-    <section class="slide-content"><h3 id="examples">Examples</h3>
-<pre><code class="lang-r">routes &lt;- list(
-  <span class="comment"># every route is a map between path and the function that should be called</span>
-  <span class="comment"># on the request</span>
-  <span class="comment"># Let's make a route with path 'hello' that returns 'world'</span>
-  <span class="string">'/hello'</span> = <span class="keyword">function</span>(<span class="keyword">...</span>) <span class="string">'world'</span>,
-  <span class="comment"># That simple!</span>
-  <span class="comment"># Now let's make something more complicated</span>
-  <span class="comment"># Let's make a route 'sum' that would sum all the inputs for a JSON payload</span>
-  <span class="comment"># that looks like {"values": [1,2,3,-5.6,...]}</span>
-  <span class="comment"># and let's make it work with POST requests (or, generally speaking)</span>
-  <span class="comment"># for requests that have a JSON body</span>
-  <span class="string">'/sum'</span>   = <span class="keyword">function</span>(p, q) {
-    <span class="keyword">if</span> (length(p) == <span class="number">0</span>) <span class="string">'must be a POST request'</span> <span class="keyword">else</span> sum(unlist(p$values))
-  },
-  <span class="comment"># You can also submit a wildcard route that will be called</span>
-  <span class="comment"># whenever someone queries a route that was not specified</span>
-  <span class="comment"># in the configuration</span>
-  <span class="keyword">function</span>(<span class="keyword">...</span>) { <span class="string">"This is microserver demo"</span> }
-)
-<span class="comment"># And then you can just run the server using the routes that you've defined</span>
-microserver::run_server(routes, port = <span class="number">8103</span>)</code></pre>
-</section>
-  </div>
-  <div class="slide hidden" id="slide-10">
-    <section class="slide-content"><h3 id="examples">Examples</h3>
-<p>Here are some examples of querying this server:
-<img src="http://puu.sh/kRx5x/d34cd39f72.png" alt="GET root"></p>
-</section>
-  </div>
-  <div class="slide hidden" id="slide-11">
-    <section class="slide-content"><h3 id="examples">Examples</h3>
-<p><img src="http://puu.sh/kRwd1/95382fcb8f.png" alt="GET hello"></p>
-</section>
-  </div>
-  <div class="slide hidden" id="slide-12">
-    <section class="slide-content"><h3 id="examples">Examples</h3>
-<p>Notice how error message gets returned as a response
-<img src="http://puu.sh/kRwqo/454be5aa0c.png" alt="POST sum"></p>
-</section>
-  </div>
-  <div class="slide hidden" id="slide-13">
-    <section class="slide-content"><h3 id="examples">Examples</h3>
-<p><img src="http://puu.sh/kRwT5/ba673c15cb.png" alt="GET sum"></p>
-</section>
-  </div>
-  <div class="slide hidden" id="slide-14">
-    <section class="slide-content"><h3 id="demo">Demo</h3>
-<ul>
-<li>Show POST and GET parameter parsing works.</li>
-<li>Make a titanic prediction web server.</li>
-<li>Create a shiny app that works with microserver.</li>
-</ul>
-</section>
-  </div>
-  <div class="slide hidden" id="slide-15">
+  <div class="slide hidden" id="slide-19">
     <section class="slide-content"><div class="author">
   <h1 class="name">Kirill Sevastyanenko</h1>
     <h3 class="twitter">
