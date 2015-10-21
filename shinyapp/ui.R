@@ -1,48 +1,30 @@
-# For dropdown menu
-actionLink <- function(inputId, ...) {
-  tags$a(href='javascript:void',
-         id=inputId,
-         class='action-button',
-         ...)
-}
-
 shinyUI(fluidPage(
-  titlePanel("Mtcars predictor"),
+  titlePanel("Mpg predictor"),
   fluidRow(
     column(3,
       wellPanel(
         h4("Filter"),
-        sliderInput("reviews", "Minimum number of reviews on Rotten Tomatoes",
-          10, 300, 80, step = 10),
-        sliderInput("year", "Year released", 1940, 2014, value = c(1970, 2014)),
-        sliderInput("oscars", "Minimum number of Oscar wins (all categories)",
-          0, 4, 0, step = 1),
-        sliderInput("boxoffice", "Dollars at Box Office (millions)",
-          0, 800, c(0, 800), step = 1),
-        selectInput("genre", "Genre (a movie can have multiple genres)",
-          c("All", "Action", "Adventure", "Animation", "Biography", "Comedy",
-            "Crime", "Documentary", "Drama", "Family", "Fantasy", "History",
-            "Horror", "Music", "Musical", "Mystery", "Romance", "Sci-Fi",
-            "Short", "Sport", "Thriller", "War", "Western")
-        ),
-        textInput("director", "Director name contains (e.g., Miyazaki)"),
-        textInput("cast", "Cast names contains (e.g. Tom Hanks)")
+        sliderInput("cyl", "Number of cylinders", value = 6, min = 4, max = 8, step = 1),
+        sliderInput("gear", "Number of forward gears", value = 4, min = 3, max = 5, step = 1),
+        sliderInput("carb", "Number of carburetors", value = 2, min = 1, max = 8, step = 1),
+        checkboxInput("am", label = "Automatic transmission", value = TRUE),
+        checkboxInput("vs", label = "V-engine", value = FALSE),
+        numericInput("disp", "Displacement (cu.in.)", value = 196.3, min = 71.1, max = 472, step = 1),
+        numericInput("hp", "Gross horsepower", value = 123.0, min = 52, max = 335, step = 1),
+        numericInput("drat", "Rear axle ratio", value = 3.695, min = 2.760, max = 4.930, step = 0.1),
+        numericInput("wt", "Weight (lb/1000)", value = 3.325, min = 1.513, max = 5.424, step = 0.1),
+        numericInput("qsec", "1/4 mile time", value = 17.71, min = 14.50, max = 22.90, step = 0.1)
       ),
       wellPanel(
-        selectInput("xvar", "X-axis variable", axis_vars, selected = "Meter"),
-        selectInput("yvar", "Y-axis variable", axis_vars, selected = "Reviews"),
         tags$small(paste0(
-          "Note: The Tomato Meter is the proportion of positive reviews",
-          " (as judged by the Rotten Tomatoes staff), and the Numeric rating is",
-          " a normalized 1-10 score of those reviews which have star ratings",
-          " (for example, 3 out of 4 stars)."
+          "Predicting mpg powered by mtcars"
         ))
       )
     ),
     column(9,
       wellPanel(
-        span("Predicted mpg:",
-          textOutput("n_movies")
+        span(h3("Predicted mpg:"),
+          h1(textOutput("predicted_mpg"))
         )
       )
     )

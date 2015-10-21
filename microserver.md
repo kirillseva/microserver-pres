@@ -141,32 +141,31 @@ microserver::run_server(routes, port = 8103)
 
 ### Using this model in an app
 
+```r
+shinyServer(function(input, output) {
+  score <- reactive({
+    varnames <- c('cyl', 'disp', 'hp', 'drat',
+      'wt', 'qsec', 'vs', 'am', 'gear', 'carb')
+    payload <- lapply(varnames, function(nm) input[[nm]]) %>% setNames(varnames)
+    httr::POST(paste0(URL, '/predict'), encode = 'json', body = payload) %>%
+      content %>%
+      jsonlite::fromJSON(.) %>%
+      .$score
+  })
+
+  output$predicted_mpg <- renderText({ score() })
+})
+```
+
+--
+
+### Using this model in an app
+
+That is all that your app/engineers need to do! Only fetch data and
+send it to prediction service.
+
 --
 
 ## One model server - infinitely many apps!
 
---
-
-### POST and GET request parameter parsing
-
-```r
-library(magrittr); library(httr); library(jsonlight)
-routes <- list(
-  '/post' = function(p, q) { p },
-  '/get'  = function(p, q) { q },
-  function(...) "ok")
-microserver::run_server(routes, port = 8103)
-```
-
-```r
-httr::GET(url) %>% content # default route
-# [1] "\"ok\""
-httr::GET(paste0(url, 'get')) %>% content # GET with no args
-# [1] ""
-httr::GET(paste0(url, 'get?a=1&b=2')) %>% content # list(a=1,b=2) is available as `q`
-# [1] "{\"a\":\"1\",\"b\":\"2\"}"
-httr::GET(paste0(url, 'post?a=1&b=2')) %>% content # `p` is still empty
-# [1] ""
-httr::POST(paste0(url, 'post'), body = list(a=1,b=2), encode = "json") %>% content
-# [1] "{\"a\":1,\"b\":2}" # list(a=1,b=2) is available as `p`
-```
+<img src="http://puu.sh/kSEpJ/da98a1e7d3.png" width="100%">

@@ -520,30 +520,30 @@ microserver::run_server(routes, port = <span class="number">8103</span>)</code><
   </div>
   <div class="slide hidden" id="slide-16">
     <section class="slide-content"><h3 id="using-this-model-in-an-app">Using this model in an app</h3>
+<pre><code class="lang-r">shinyServer(<span class="keyword">function</span>(input, output) {
+  score &lt;- reactive({
+    varnames &lt;- c(<span class="string">'cyl'</span>, <span class="string">'disp'</span>, <span class="string">'hp'</span>, <span class="string">'drat'</span>,
+      <span class="string">'wt'</span>, <span class="string">'qsec'</span>, <span class="string">'vs'</span>, <span class="string">'am'</span>, <span class="string">'gear'</span>, <span class="string">'carb'</span>)
+    payload &lt;- lapply(varnames, <span class="keyword">function</span>(nm) input[[nm]]) %&gt;% setNames(varnames)
+    httr::POST(paste0(URL, <span class="string">'/predict'</span>), encode = <span class="string">'json'</span>, body = payload) %&gt;%
+      content %&gt;%
+      jsonlite::fromJSON(.) %&gt;%
+      .$score
+  })
+
+  output$predicted_mpg &lt;- renderText({ score() })
+})</code></pre>
 </section>
   </div>
   <div class="slide hidden" id="slide-17">
-    <section class="slide-content"><h2 id="one-model-server-infinitely-many-apps-">One model server - infinitely many apps!</h2>
+    <section class="slide-content"><h3 id="using-this-model-in-an-app">Using this model in an app</h3>
+<p>That is all that your app/engineers need to do! Only fetch data and
+send it to prediction service.</p>
 </section>
   </div>
   <div class="slide hidden" id="slide-18">
-    <section class="slide-content"><h3 id="post-and-get-request-parameter-parsing">POST and GET request parameter parsing</h3>
-<pre><code class="lang-r"><span class="keyword">library</span>(magrittr); <span class="keyword">library</span>(httr); <span class="keyword">library</span>(jsonlight)
-routes &lt;- list(
-  <span class="string">'/post'</span> = <span class="keyword">function</span>(p, q) { p },
-  <span class="string">'/get'</span>  = <span class="keyword">function</span>(p, q) { q },
-  <span class="keyword">function</span>(<span class="keyword">...</span>) <span class="string">"ok"</span>)
-microserver::run_server(routes, port = <span class="number">8103</span>)</code></pre>
-<pre><code class="lang-r">httr::GET(url) %&gt;% content <span class="comment"># default route</span>
-<span class="comment"># [1] "\"ok\""</span>
-httr::GET(paste0(url, <span class="string">'get'</span>)) %&gt;% content <span class="comment"># GET with no args</span>
-<span class="comment"># [1] ""</span>
-httr::GET(paste0(url, <span class="string">'get?a=1&amp;b=2'</span>)) %&gt;% content <span class="comment"># list(a=1,b=2) is available as `q`</span>
-<span class="comment"># [1] "{\"a\":\"1\",\"b\":\"2\"}"</span>
-httr::GET(paste0(url, <span class="string">'post?a=1&amp;b=2'</span>)) %&gt;% content <span class="comment"># `p` is still empty</span>
-<span class="comment"># [1] ""</span>
-httr::POST(paste0(url, <span class="string">'post'</span>), body = list(a=<span class="number">1</span>,b=<span class="number">2</span>), encode = <span class="string">"json"</span>) %&gt;% content
-<span class="comment"># [1] "{\"a\":1,\"b\":2}" # list(a=1,b=2) is available as `p`</span></code></pre>
+    <section class="slide-content"><h2 id="one-model-server-infinitely-many-apps-">One model server - infinitely many apps!</h2>
+<p><img src="http://puu.sh/kSEpJ/da98a1e7d3.png" width="100%"></p>
 </section>
   </div>
   <div class="slide hidden" id="slide-19">
